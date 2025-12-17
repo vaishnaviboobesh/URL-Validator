@@ -1,0 +1,5 @@
+# Node / TypeScript
+dist/
+
+# Editor
+.vscode/
