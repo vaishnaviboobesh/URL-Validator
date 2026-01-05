@@ -1,0 +1,11 @@
+.status-loading {
+  color: gray;
+}
+
+.status-success {
+  color: green;
+}
+
+.status-error {
+  color: red;
+}
