@@ -11,6 +11,7 @@ type UrlCheckResult = {
   */
 export function mockCheckUrl(urlInput: string): Promise<UrlCheckResult> {
 	return new Promise((resolve) => {
+    setTimeout(() => {
 		if (urlInput.endsWith("/")) {
 			return resolve({ exists: true, urlType: "folder" });
 		} else if(urlInput.includes('.')) {
@@ -18,5 +19,6 @@ export function mockCheckUrl(urlInput: string): Promise<UrlCheckResult> {
     } else {
       return resolve({ exists: false })
     }
+  }, 3000);
 	});
 }
