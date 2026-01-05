@@ -1,66 +1,51 @@
-import { debounce } from "./debounce.function.js";
-import { mockCheckUrl } from "./mock.service.js";
-import { isValidUrl } from "./url-format-checker.function.js";
+import { debounce } from "./utilities/debounce.function.js";
+import { mockCheckUrl } from "./services/mock.service.js";
+import { isValidUrl } from "./utilities/url-format-checker.function.js";
+import { setStatus } from "./ui/status-renderer.function.js";
 
 const urlInput = document.getElementById("urlInput") as HTMLInputElement;
-const statusText = document.getElementById("statusText") as HTMLParagraphElement;
-
+const statusTextElement = document.getElementById(
+  "statusText"
+) as HTMLParagraphElement;
 
 urlInput.addEventListener("input", () => {
   const inputValue = urlInput.value.trim();
 
   if (!isValidUrl(inputValue)) {
-    setStatus({ type: "error", message: "Invalid URL." });
+    setStatus(statusTextElement, { type: "error", message: "Invalid URL." });
     return;
   }
   checkUrlWithDebounce(inputValue);
 });
 
+let currentAbortController: AbortController | null = null;
+
 const checkUrlWithDebounce = debounce(async (urlInput: string) => {
-  setStatus({ type: "loading", message: "Checking..." });
-  const checkResult = await mockCheckUrl(urlInput);
+  currentAbortController?.abort();
+  currentAbortController = new AbortController();
+  const signalToAbort = currentAbortController.signal;
 
-  if (!checkResult.exists) {
-    setStatus({ type: "error", message: "URL doesn't exist." });
-    return;
+  setStatus(statusTextElement, { type: "loading", message: "Checking..." });
+
+  try {
+    const checkResult = await mockCheckUrl(urlInput, signalToAbort);
+
+    if (!checkResult.exists) {
+      setStatus(statusTextElement, { type: "error", message: "URL doesn't exist." });
+      return;
+    }
+
+    setStatus(statusTextElement, {
+      type: "success",
+      message: `It's a ${
+        checkResult.urlType === "file" ? "file" : "folder"
+      } URL.`,
+    });
+  } catch (error) {
+    if ((error as DOMException).name == "AbortError") {
+      // Ignore outdated server responses
+      return;
+    }
+    setStatus(statusTextElement, { type: "error", message: "URL doesn't exist." });
   }
-
-  setStatus({
-    type: "success",
-    message: `It's a ${
-      checkResult.urlType === "file" ? "file" : "folder"
-    } URL.`,
-  });
 }, 300);
-
-type Status =
-  | { type: "loading"; message: string }
-  | { type: "success"; message: string }
-  | { type: "error"; message: string }
-  | { type: "idle" };
-
-/*
-** Updates status text and class based on the given status type
-*/
-function setStatus(status: Status) {
-  statusText.className = "";
-  statusText.textContent = "";
-
-  switch (status.type) {
-    case "loading":
-      statusText.textContent = status.message;
-      statusText.classList.add("status-loading");
-      break;
-
-    case "success":
-      statusText.textContent = status.message;
-      statusText.classList.add("status-success");
-      break;
-
-    case "error":
-      statusText.textContent = status.message;
-      statusText.classList.add("status-error");
-      break;
-  }
-}
-
