@@ -3,6 +3,12 @@ import { mockCheckUrl } from "../src/services/mock.service";
 describe("mockCheckUrl", () => {
   jest.useFakeTimers();
 
+   it("returns valid for URLs ending with known extensions", async () => {
+    const promise = mockCheckUrl("https://example.com");
+    jest.advanceTimersByTime(1000);
+    await expect(promise).resolves.toEqual({ exists: true });
+  });
+
   it("returns file for URLs ending with known extensions", async () => {
     const promise = mockCheckUrl("https://example.com/file.txt");
     jest.advanceTimersByTime(1000);

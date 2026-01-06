@@ -9,7 +9,7 @@
     func: T,
     delay: number
   ): (...args: Parameters<T>) => void {
-    let timer: number | undefined;
+   let timer: ReturnType<typeof setTimeout>;
 
     return (...args: Parameters<T>) => {
       if (timer){
