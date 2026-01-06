@@ -50,3 +50,21 @@ Since no backend is provided, the following assumptions are made for mocking pur
  - All other URLs are treated as non-existing
 
   These assumptions are intentionally simple and serve only to demonstrate the  required behavior.
+
+# Unit testing
+
+This project includes unit tests using Jest with TypeScript support via ts-jest for the core logic to ensure reliability and correctness.
+
+## Tested Modules
+1. URL Validation (isValidUrl)
+2. Mock URL Service (mockCheckUrl)
+
+## Running Tests
+
+- Install dependencies:
+
+`npm install`
+
+- Run tests:
+
+`npm run test`
