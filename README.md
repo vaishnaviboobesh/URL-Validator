@@ -5,8 +5,9 @@ This is a small browser-based application written in *TypeScript* that allows a 
 - Enter a URL
 - Validate the URL format while typing
 - Asynchronously check (mocked) whether the URL exists
-- Indicate whether the URL represents a file or a folder
+- Indicate whether the URL represents a file or a folder or does not exist
 - Avoid excessive “server” calls by debouncing input events
+- Aborts server calls when user input URL changed
 
 The server-side check is intentionally mocked on the client side, as required by the task.
 
@@ -45,7 +46,7 @@ The server-side check is intentionally mocked on the client side, as required by
 Since no backend is provided, the following assumptions are made for mocking purposes:
 
  - A URL path ending with / represents a folder
- - A URL path ending with a file extension (e.g. .txt, .png) represents a file
+ - A URL path ending with a file extension (e.g. .txt, .png, .json, .jpg, .pdf, .html, .csv) represents a file
  - All other URLs are treated as non-existing
 
   These assumptions are intentionally simple and serve only to demonstrate the  required behavior.
