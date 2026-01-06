@@ -3,6 +3,13 @@ type UrlCheckResult = {
   urlType?: "file" | "folder";
 };
 
+const MOCK_DOMAINS = [
+  ".com",
+  ".net",
+  ".org",
+  ".de",
+];
+
 const MOCK_FILE_EXTENSIONS = [
   ".txt",
   ".json",
@@ -30,6 +37,9 @@ export function mockCheckUrl(
       }
       if (urlInput.endsWith("/")) {
         return resolve({ exists: true, urlType: "folder" });
+      }
+      if (MOCK_DOMAINS.some((ext) => urlInput.endsWith(ext))) {
+        return resolve({ exists: true });
       }
       return resolve({ exists: false });
     }, 1000);

@@ -31,14 +31,21 @@ const checkUrlWithDebounce = debounce(async (urlInput: string) => {
     const checkResult = await mockCheckUrl(urlInput, signalToAbort);
 
     if (!checkResult.exists) {
-      setStatus(statusTextElement, { type: "error", message: "URL doesn't exist." });
+      setStatus(statusTextElement, {
+        type: "error",
+        message: "URL doesn't exist.",
+      });
       return;
     }
 
     setStatus(statusTextElement, {
       type: "success",
       message: `It's a ${
-        checkResult.urlType === "file" ? "file" : "folder"
+        checkResult.urlType === "file"
+          ? "file"
+          : checkResult.urlType === "folder"
+          ? "folder"
+          : "valid"
       } URL.`,
     });
   } catch (error) {
@@ -46,6 +53,9 @@ const checkUrlWithDebounce = debounce(async (urlInput: string) => {
       // Ignore outdated server responses
       return;
     }
-    setStatus(statusTextElement, { type: "error", message: "URL doesn't exist." });
+    setStatus(statusTextElement, {
+      type: "error",
+      message: "URL doesn't exist.",
+    });
   }
 }, 300);
