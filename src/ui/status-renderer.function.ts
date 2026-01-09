@@ -1,9 +1,12 @@
 import { Status } from "./status.type";
 
- /*
+/*
  ** Updates status text and style class based on the given status type
  */
-export function setStatus(statusTextElement: HTMLParagraphElement, status: Status) {
+export function setStatus(
+  statusTextElement: HTMLParagraphElement,
+  status: Status
+) {
   statusTextElement.className = "";
   statusTextElement.textContent = "";
 
@@ -21,6 +24,10 @@ export function setStatus(statusTextElement: HTMLParagraphElement, status: Statu
     case "error":
       statusTextElement.textContent = status.message;
       statusTextElement.classList.add("status-error");
+      break;
+
+    case "idle":
+      statusTextElement.textContent = status.message;
       break;
   }
 }
