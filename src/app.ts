@@ -8,27 +8,40 @@ const statusTextElement = document.getElementById(
   "statusText"
 ) as HTMLParagraphElement;
 
+/**
+ * Request sequence number to track the latest request.
+ */
+let currentRequestId = 0;
+
 urlInput.addEventListener("input", () => {
   const inputValue = urlInput.value.trim();
+
+  if (inputValue.length == 0) {
+    setStatus(statusTextElement, {type: "idle", message: ""});
+    return;
+  }
 
   if (!isValidUrl(inputValue)) {
     setStatus(statusTextElement, { type: "error", message: "Invalid URL." });
     return;
   }
+  // resetting status to loading immediately when input changed
+  setStatus(statusTextElement, { type: "loading", message: "Checking..." });
+
   checkUrlWithDebounce(inputValue);
 });
 
-let currentAbortController: AbortController | null = null;
-
-const checkUrlWithDebounce = debounce(async (urlInput: string) => {
-  currentAbortController?.abort();
-  currentAbortController = new AbortController();
-  const signalToAbort = currentAbortController.signal;
-
-  setStatus(statusTextElement, { type: "loading", message: "Checking..." });
+const checkUrlWithDebounce = debounce(async (url: string) => {
+  // Increment and capture request ID at the moment this debounced call executes
+  const thisRequestId = ++currentRequestId;
 
   try {
-    const checkResult = await mockCheckUrl(urlInput, signalToAbort);
+    const checkResult = await mockCheckUrl(url);
+
+    // Ignore outdated responses if requestId is not current
+    if (thisRequestId !== currentRequestId) {
+      return;
+    }
 
     if (!checkResult.exists) {
       setStatus(statusTextElement, {
@@ -48,14 +61,15 @@ const checkUrlWithDebounce = debounce(async (urlInput: string) => {
           : "valid"
       } URL.`,
     });
-  } catch (error) {
-    if ((error as DOMException).name == "AbortError") {
-      // Ignore outdated server responses
+  } catch {
+    // Ignore errors from outdated requests
+    if (thisRequestId !== currentRequestId) {
       return;
     }
+
     setStatus(statusTextElement, {
       type: "error",
-      message: "URL doesn't exist.",
+      message: "Failed to check URL. Please try again.",
     });
   }
 }, 300);
