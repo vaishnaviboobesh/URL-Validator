@@ -26,6 +26,7 @@ export function throttle<T extends (...args: any[]) => void>(
 
       lastExecutionTime = now;
       func(...args);
+      lastArgs = null;
     } else if (!timeoutId) {
       timeoutId = setTimeout(() => {
         lastExecutionTime = Date.now();
@@ -33,6 +34,7 @@ export function throttle<T extends (...args: any[]) => void>(
 
         if (lastArgs) {
           func(...lastArgs);
+          lastArgs = null;
         }
       }, remainingTime);
     }

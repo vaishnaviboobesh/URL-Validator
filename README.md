@@ -6,7 +6,7 @@ This is a small browser-based application written in *TypeScript* that allows a 
 - Validate the URL format while typing
 - Asynchronously check (mocked) whether the URL exists
 - Indicate whether the URL is valid, represents a file or a folder or does not exist
-- Avoid excessive “server” calls by debouncing input events
+- Avoid excessive “server” calls by throttling input events
 - Ensures only the latest input result is displayed by ignoring stale responses (previous requests are invalidated on new input)
 - Shows immediate feedback with a “Checking...” status while waiting for the async URL check
 
@@ -52,7 +52,7 @@ Since no backend is provided, the following assumptions are made for mocking pur
  - A URL path ending with a file extension (e.g. .txt, .png, .json, .jpg, .pdf, .html, .csv) represents a file
  - All other URLs are treated as non-existing
 
- Note: Added a 1-second delay to the mocked server method to simulate real backend response latency.
+ Note: Added a random delay (500 - 2000ms) to the mocked server method to simulate real backend response latency.
 
 These assumptions are intentionally simple and serve only to demonstrate the  required behavior.
 
