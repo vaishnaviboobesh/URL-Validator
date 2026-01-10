@@ -7,7 +7,8 @@ This is a small browser-based application written in *TypeScript* that allows a 
 - Asynchronously check (mocked) whether the URL exists
 - Indicate whether the URL is valid, represents a file or a folder or does not exist
 - Avoid excessive “server” calls by debouncing input events
-- Aborts server calls when user input URL changed
+- Ensures only the latest input result is displayed by ignoring stale responses (previous requests are invalidated on new input)
+- Shows immediate feedback with a “Checking...” status while waiting for the async URL check
 
 The server-side check is intentionally mocked on the client side, as required by the task.
 
