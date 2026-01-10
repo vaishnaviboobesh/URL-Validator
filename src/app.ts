@@ -1,7 +1,7 @@
-import { debounce } from "./utilities/debounce.function.js";
 import { mockCheckUrl } from "./services/mock.service.js";
 import { isValidUrl } from "./utilities/url-format-checker.function.js";
 import { setStatus } from "./ui/status-renderer.function.js";
+import { throttle } from "./utilities/throttle.function.js";
 
 const urlInput = document.getElementById("urlInput") as HTMLInputElement;
 const statusTextElement = document.getElementById(
@@ -32,10 +32,10 @@ urlInput.addEventListener("input", () => {
   setStatus(statusTextElement, { type: "loading", message: "Checking..." });
 
   const capturedRequestId = currentRequestId;
-  checkUrlWithDebounce(inputValue, capturedRequestId);
+  checkUrlWithThrottle(inputValue, capturedRequestId);
 });
 
-const checkUrlWithDebounce = debounce(
+const checkUrlWithThrottle = throttle(
   async (url: string, thisRequestId: number) => {
     try {
       const checkResult = await mockCheckUrl(url);
